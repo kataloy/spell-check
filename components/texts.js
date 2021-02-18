@@ -18,7 +18,7 @@ class Texts {
 
     return {
       text: this.correctText(result.data, result.text)};
-  }
+  };
 }
 
 module.exports = new Texts();
