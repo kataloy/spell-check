@@ -1,6 +1,6 @@
 const yaspeller = require('yaspeller');
 
-module.exports = (text, options) => {
+const checkText = (text, options) => {
   return new Promise((resolve, reject) => {
     yaspeller.checkText(text, (err, data, text) => {
       if (err) {
@@ -11,4 +11,8 @@ module.exports = (text, options) => {
     }, options);
   });
 };
+
+module.exports = {
+  checkText,
+}
 

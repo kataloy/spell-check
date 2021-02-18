@@ -1,7 +1,8 @@
-const crypto = require('crypto');
 const { User } = require('../models');
 const { ValidationError, AuthorizationError } = require('../errors');
-const client = require('../utils/redis');
+const redis = require('../utils/redis');
+const { passwordSalt } = require('../config');
+const crypto = require('../utils/crypto');
 
 class Auth {
   async signUp ({ username, password }) {
@@ -17,7 +18,7 @@ class Auth {
 
     const record = await User.create({
       username,
-      password: crypto.createHash('sha256').update(password).digest('hex'),
+      password: crypto.getHash(`${passwordSalt}${password}`),
     });
 
     return {
@@ -30,7 +31,7 @@ class Auth {
     const user = await User.findOne({
       where: {
         username,
-        password: crypto.createHash('sha256').update(password).digest('hex'),
+        password: crypto.getHash(`${passwordSalt}${password}`),
       },
     });
 
@@ -38,16 +39,18 @@ class Auth {
       throw new AuthorizationError('Invalid user or password');
     }
 
-    const token = crypto.createHash('sha256').update(this.getRandom()).digest('hex');
-    await client.set(token, user.id);
-
+    const token = crypto.getHash(this.getRandom());
+    await redis.set(`token:${token}`, user.id);
 
     return token;
   }
 
-  getRandom () {
-    return `${Math.random() * 1000000 + Date.now()}`;
+  async signOut (token) {
+    return await redis.del(`token:${token}`);
+  }
 
+  getRandom () {
+    return `${Math.random() * 1000000}_${Date.now()}`;
   }
 }
 

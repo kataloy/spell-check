@@ -10,7 +10,7 @@ module.exports = (router) => {
     ctx.body = await auth.signIn(ctx.request.body);
   });
 
-  router.post('/auth/signout', async (ctx) => {
-    ctx.body = await auth.signOut()
+  router.post('/auth/signout',checkAuth, async (ctx) => {
+    ctx.body = await auth.signOut(ctx.state.token);
   })
 };

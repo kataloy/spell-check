@@ -1,7 +1,7 @@
-const spellCheck = require('./spellCheck');
+const texts = require('./texts');
 const auth = require('./auth');
 
 module.exports = {
-  spellCheck,
+  texts,
   auth,
 };

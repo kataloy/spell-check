@@ -1,18 +1,23 @@
-const client = require('../utils/redis');
+const redis = require('../utils/redis');
+const { User } = require('../models');
 
 module.exports = async (ctx, next) => {
   const { authorization } = ctx.headers;
   const [, token] = authorization.split(' ');
 
-  const userId = await client.get(token);
+  const userId = await redis.get(`token:${token}`);
 
   if (!userId) {
     ctx.throw(401);
   }
 
-  ctx.state.user = {
-    userId,
-  };
+  ctx.state.token = token;
+
+  ctx.state.user = await User.findOne({
+    where: {
+      id: userId,
+    },
+  });
 
   await next();
 }
