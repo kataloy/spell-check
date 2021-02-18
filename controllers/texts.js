@@ -5,7 +5,7 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 
 module.exports = (router) => {
-  router.post('/texts/check', async (ctx) => {
+  router.post('/texts/check',checkAuth, async (ctx) => {
     const { files, body } = ctx.request;
 
     if (files) {
