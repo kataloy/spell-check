@@ -16,7 +16,8 @@ class Texts {
       lang: 'ru',
     });
 
-    return this.correctText(result.data, result.text);
+    return {
+      text: this.correctText(result.data, result.text)};
   }
 }
 
