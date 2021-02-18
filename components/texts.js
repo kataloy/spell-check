@@ -3,7 +3,7 @@ const yaspeller = require('../utils/yaspeller');
 class Texts {
   correctText (typos, text) {
     typos.forEach((item) => {
-      if(item.s.length > 0) {
+      if (item.s.length > 0) {
         text = text.replace(item.word, item.s[0]);
       }
     });
@@ -11,9 +11,9 @@ class Texts {
     return text;
   }
 
-  async checkText ({ text }) {
+  async checkText ({ text, lang }) {
     const result = await yaspeller.checkText(text, {
-      lang: 'ru',
+      lang,
     });
 
     return {
